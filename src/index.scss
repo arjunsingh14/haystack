@@ -6,35 +6,34 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  width: 100%;
 }
 
-
-@mixin scorebtn(){
-    text-decoration: none;
-    color: white;
-    font-size: 1.25rem;
-    font-weight: 600;
-    border: solid;
-    padding: 0.5rem;
-    border-radius: 8px;
-    transition: background-color 300ms ease-in-out;
-    transition: color 400ms ease-in-out;
+@mixin scorebtn() {
+  text-decoration: none;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border: solid;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 300ms ease-in-out;
+  transition: color 400ms ease-in-out;
 }
 
-.root{
+#root {
+  height: 100%;
+}
+.App {
   height: 100%;
 }
 
 .scores {
-    @include scorebtn();
-  }
-  .scores:hover{
-    background-color: white;
-    color: orange;
+  @include scorebtn();
+  text-align: end;
 }
-
-.setup {
-  color: black
+.scores:hover {
+  color: white;
 }
 
 code {
@@ -152,20 +151,124 @@ code {
 }
 
 
+
 .setup-page {
-  height: 100vh;
-  background: url("./assets/Vector.svg") no-repeat center;
+  background: url("./assets/vector.svg") no-repeat;
+  min-height: 100vh;
+  nav {
+    text-align: end;
+    height: 150px;
+    .setup {
+      position: relative;
+      top: 50px;
+      right: 50px;
+    }
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    .pic-container {
+      background-color: black;
+      padding: 7px;
+      max-width: 33%;
+      max-height: 10%;
+      animation: picAnimation 500ms ease-in;
+      .game-pic {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+    .article-container {
+      flex-shrink: 2;
+      h2 {
+        text-align: center;
+      }
+      .character-container {
+        display: flex;
+        .characters {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+          text-align: center;
+          background-color: transparent;
+          border: solid;
+          margin-left: 10px;
+          width: 33%;
+          img {
+            max-width: 100%;
+            max-height: 60%;
+          }
+          h3 {
+            color: black;
+            font-size: 1.2rem;
+          }
+        }
+        .left{
+            animation: left-animation 0.5s ease-in;
+        }
+        .middle{
+            animation: middle-animation 0.75s ease-in;
+        }
+        .right{
+            animation: right-animation 1s ease-in;
+        }
+      }
+    }
+    .ready-container{
+      text-align: center;
+      margin-top: 50px;
+      .ready{
+        @include scorebtn();
+        color: black;
+        transition: color 170ms ease-in-out;
+      }
+      .ready:hover{
+        color:#f16b0e
+      }
+    }
+  }
 }
 
-@media (max-width: 1000px){
-  .setup-page{
-    background: url("./assets/ipad.svg") no-repeat center;
-    
+.setup {
+  color: black;
+}
+@keyframes picAnimation {
+  0% {
+    transform: translateY(200%);
+  }
+  100% {
+    transform: translateY(0%);
   }
 }
 
 
-@media (max-width: 500px) and (min-height:1200px) {
+@keyframes left-animation {
+  0%{
+    transform: translateX(200%);
+  }
+  100%{
+    transform: translateX(0%);
+  }
+}
+@keyframes middle-animation {
+  0%{
+    transform: translateX(200%);
+  }
+  100%{
+    transform: translateX(0%);
+  }
+}
+@keyframes right-animation {
+  0%{
+    transform: translateX(100%);
+  }
+  100%{
+    transform: translateX(0%);
+  }
+}
+
+@media (max-width: 500px) {
   .animated-grid {
     display: none;
   }
@@ -174,5 +277,14 @@ code {
   }
   .nav-text {
     margin-right: 20px;
+  }
+  .pic-container{
+    display: none;
+  }
+  .name{
+    font-size: 0.7rem;
+  }
+  .left,.middle,.right{
+    animation: none !important;
   }
 }
