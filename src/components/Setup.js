@@ -4,8 +4,7 @@ import background from "../assets/background.jpeg";
 import { useGlobalContext } from "../context";
 
 const Setup = () => {
-  const { gameSeed } = useGlobalContext();
-  console.log(gameSeed);
+  const { game } = useGlobalContext();
   return (
     <main className="setup-page">
       <nav className="navbar-setup">
@@ -20,7 +19,7 @@ const Setup = () => {
         <article className="article-container">
           <h2 className="char-header">Characters to find</h2>
           <div className="character-container">
-            {gameSeed.map((character, index) => {
+            {game.map((character, index) => {
               if (index === 0) {
                 return (
                   <div key={character.id} className="characters left">
