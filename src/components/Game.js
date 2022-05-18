@@ -7,21 +7,20 @@ import { useGlobalContext } from "../context";
 const Game = () => {
   const [dimension, setDimension] = useState({ x: 0, y: 0 });
   const [coords, setCoords] = useState({ x: 0, y: 0 });
-
+  const [showModal, setShowmodal] = useState({})
   //   const { game } = useGlobalContext();
   const game = { name: "Neo", found: false, relX: 0.41, relY: 0.22 };
-  /*
-  getDimension returns the initial width and height of
-  the game relative to the user's device. Which will
-  be used to calculate the relative position of every possible
-  character.
-  */
   useEffect(() => {
     isFound(game);
-    console.log(coords);
+    const handleResize = () => {
+        setDimension(getDimensions);
+    }
+    window.addEventListener('resize', handleResize());
+    return () => {window.removeEventListener('resize', handleResize())}
   }, [coords]);
 
   const isFound = (character) => {
+    console.log('fired');
     if (
       character.relX * dimension.width - 50 <= coords.x &&
       coords.x <= character.relX * dimension.width + 50 &&
@@ -32,6 +31,13 @@ const Game = () => {
     }
   };
 
+  /*
+  getDimension returns the initial width and height of
+  the game relative to the user's device. Which will
+  be used to calculate the relative position of every possible
+  character.
+  */
+
   const getDimensions = () => {
     const img = document.querySelector("#game-pic");
     const rect = img.getBoundingClientRect();
@@ -40,10 +46,7 @@ const Game = () => {
 
   //when the user clicks handle
   const handleMouse = (e) => {
-    const dropdown = document.querySelector(".dropdown");
-    dropdown.setAttribute("class", "active");
-    dropdown.style.left= `${e.clientX}px`;
-    dropdown.style.top = `${e.clientY}px`;
+      setCoords({x: e.clientX, y: e.clientY})
   };
   return (
     <main className="game-container" onLoad={getDimensions}>
@@ -66,8 +69,5 @@ const Game = () => {
     </main>
   );
 };
-
-
-
 
 export default Game;
