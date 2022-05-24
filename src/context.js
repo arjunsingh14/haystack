@@ -2,10 +2,11 @@ import { useState, useEffect, useContext } from "react";
 import React from "react";
 import { characters } from "./data";
 
+
 const AppContext = React.createContext();
 
 const AppProvider = ({ children }) => {
-    
+
   const generateGame = (array) => {
     const copy = array.slice(0);
     const seed = [];
@@ -18,12 +19,13 @@ const AppProvider = ({ children }) => {
     return seed;
   };
 
-  const [gameSeed, setGame] = useState([]);
+  const [game, setGame] = useState([]);
+  
   useEffect(() => {
     setGame(generateGame(characters));
   }, []);
   return (
-    <AppContext.Provider value={{ gameSeed }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ game, setGame }}>{children}</AppContext.Provider>
   );
 };
 

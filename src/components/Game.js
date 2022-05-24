@@ -1,33 +1,58 @@
 import React from "react";
 import gamePic from "../assets/background.jpeg";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
+import Timer from "./Timer";
 import { useGlobalContext } from "../context";
-
+import Modal from "./Modal";
+import GameOver from "./GameOver";
 const Game = () => {
   const [dimension, setDimension] = useState({ x: 0, y: 0 });
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
-  const [showModal, setShowmodal] = useState({})
-  //   const { game } = useGlobalContext();
-  const game = { name: "Neo", found: false, relX: 0.41, relY: 0.22 };
-  useEffect(() => {
-    isFound(game);
-    const handleResize = () => {
-        setDimension(getDimensions);
+  const [coords, setCoords] = useState({ width: 0, height: 0 });
+  const [showModal, setShowModal] = useState(false);
+  const [currentCharacter, setCurrentCharacter] = useState({});
+  const [isGameOver, setIsGameOver] = useState(false);
+  const { game, setGame } = useGlobalContext();
+  
+  const detectWin = () => {
+    let isWin = true;
+    game.forEach((element) => {
+      if (element.found === false) {
+        isWin = false;
+      }
+    });
+    if (isWin) {
+      setIsGameOver(isWin);
     }
-    window.addEventListener('resize', handleResize());
-    return () => {window.removeEventListener('resize', handleResize())}
-  }, [coords]);
+  };
+
+  const handleResize = () => {
+    setDimension(getDimensions);
+  };
+  useEffect(() => {
+    isFound(currentCharacter);
+  }, [currentCharacter]);
+
+  useLayoutEffect(() => {
+    window.addEventListener("resize", handleResize());
+    return () => {
+      window.removeEventListener("resize", handleResize());
+    };
+  }, []);
 
   const isFound = (character) => {
-    console.log('fired');
     if (
       character.relX * dimension.width - 50 <= coords.x &&
       coords.x <= character.relX * dimension.width + 50 &&
       character.relY * dimension.height - 50 <= coords.y &&
       coords.y <= character.relY * dimension.height + 50
     ) {
-      alert("found");
+      game.map((char) => {
+        if (char.id === character.id) {
+          return { ...(char.found = true) };
+        }
+      });
+      setGame(game);
+      detectWin();
     }
   };
 
@@ -46,19 +71,25 @@ const Game = () => {
 
   //when the user clicks handle
   const handleMouse = (e) => {
-      setCoords({x: e.clientX, y: e.clientY})
+    setCoords({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
+    const modal = document.querySelector(".active");
+    modal.style.left = `${e.nativeEvent.offsetX}px`;
+    modal.style.top = `${e.nativeEvent.offsetY}px`;
+    setShowModal(!showModal);
   };
   return (
     <main className="game-container" onLoad={getDimensions}>
       <div className="timer-container">
-        <h2>00:00:00</h2>
+        <h2><Timer isGameOver={isGameOver}/></h2>
       </div>
-      <div className="">
-        <ul className="dropdown">
-          <a href="">Neo</a>
-          <a href="">Neo</a>
-          <a href="">Neo</a>
-        </ul>
+      {/* <Modal></Modal> */}
+      <div className="img-container">
+        <Modal
+          style={showModal}
+          game={game}
+          setChar={setCurrentCharacter}
+          setCoords={setCoords}
+        />
         <img
           id="game-pic"
           src={gamePic}
@@ -66,6 +97,8 @@ const Game = () => {
           onClick={(e) => handleMouse(e)}
         />
       </div>
+
+      {isGameOver && <GameOver />}
     </main>
   );
 };
